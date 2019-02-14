@@ -1,0 +1,31 @@
+provider "yandex" {
+    folder_id = "b1g6igm69ji3tvn8qnj3"
+}
+
+resource "yandex_compute_instance" "example" {
+    name = "testtf"
+    zone = "ru-central1-a"
+
+    resources {
+        cores = 2
+        memory = 4
+    }
+
+    boot_disk {
+        initialize_params {
+            image_id = "fd83869rbingor0in0ui"
+            type = "network-nvme"
+            size = "30"
+        }
+    }
+
+    network_interface {
+        subnet_id = "e9blpr1usi3610m5392t"
+    }
+
+  provisioner "local-exec" {
+    command = "echo ${yandex_compute_instance.example.network_interface.0.ip_address} > ip_address.txt"
+  }
+
+
+}

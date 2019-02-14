@@ -1,0 +1,38 @@
+provider "yandex" {
+    folder_id = "b1g6igm69ji3tvn8qnj3"
+}
+
+resource "yandex_compute_instance" "example" {
+    name = "testtf"
+    zone = "${yandex_vpc_subnet.some_subnet.zone}"
+
+    resources {
+        cores = 2
+        memory = 4
+    }
+
+    boot_disk {
+        initialize_params {
+            image_id = "fd83i5r5g44fjkdpuuva"
+            type = "network-hdd"
+            size = "30"
+        }
+    }
+
+    network_interface {
+        subnet_id = "${yandex_vpc_subnet.some_subnet.id}"
+    }
+
+    metadata {
+
+    }
+
+}
+
+resource "yandex_vpc_network" "some_network" {}
+
+resource "yandex_vpc_subnet" "some_subnet" {
+  zone       = "ru-central1-b"
+  network_id = "${yandex_vpc_network.some_network.id}"
+  v4_cidr_blocks = ["10.2.2.0/24"]
+}
